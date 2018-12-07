@@ -8,8 +8,13 @@ namespace Checkpoint2
     {
         public static void Main(string[] args)
         {
-            var roomList = CreateRooms();
-            DisplayRooms(roomList);
+            while (true)
+            {
+                Console.WriteLine("------------------------------------------------------------");
+                Console.WriteLine();
+                var roomList = CreateRooms();
+                DisplayRooms(roomList);
+            }
         }
 
         public static void DisplayRooms(List<Room> roomList)
@@ -56,46 +61,50 @@ namespace Checkpoint2
 
         public static List<Room> CreateRooms()
         {
-            do
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Ange rum i lägenehten: ");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            string[] roomString = Console.ReadLine().Split(" | ");
+            Console.WriteLine();
+
+            foreach (string item in roomString)
             {
-                var roomList = new List<Room>();
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine("Ange rum i lägenehten: ");
-                Console.ForegroundColor = ConsoleColor.Gray;
-                string[] roomString = Console.ReadLine().Split(" | ");
-                Console.WriteLine();
-                //foreach (string item in roomString)
-                //{
-                //    if (!ValidInput(item))
-                //    {
-                //        Console.ForegroundColor = ConsoleColor.Red;
-                //        Console.WriteLine("Ogiltig indata");
-                //    }
-
-                //}
-                foreach (string input in roomString)
+                if (!ValidInput(item))
                 {
-                    string name = input.Split(' ')[0];
-                    string roomSizeString = input.Split(' ')[1];
-                    string roomSizeString2 = roomSizeString.Split("m2")[0];
-                    int roomSize = int.Parse(roomSizeString2);
-                    string lights = input.Split(' ')[2];
-
-                    var room = new Room
-                    {
-                        RoomName = name,
-                        RoomSize = roomSize,
-                        RoomLights = lights
-                    };
-                    roomList.Add(room);
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Ogiltig indata");
                 }
-                return roomList;
-            } while (true);
 
+            }
+
+            var roomList = new List<Room>();
+
+            foreach (string input in roomString)
+            {
+                string name = input.Split(' ')[0];
+                string roomSizeString = input.Split(' ')[1];
+                string roomSizeString2 = roomSizeString.Split("m2")[0];
+                int roomSize = int.Parse(roomSizeString2);
+                string lights = input.Split(' ')[2];
+
+                var room = new Room
+                {
+                    RoomName = name,
+                    RoomSize = roomSize,
+                    RoomLights = lights
+                };
+                roomList.Add(room);
+            }
+            return roomList;
         }
-        //private static bool ValidInput(string input)
-        //{
-        //    return Regex.IsMatch(input, @"^[a-zåäö]+, ,\d+,m2, ,(on|off)$", RegexOptions.IgnoreCase);
-        //}
+
+        private static bool ValidInput(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+            {
+                return false;
+            }
+            return Regex.IsMatch(input, @"^[a-zåäö]+ \d+m2 (on|off)$", RegexOptions.IgnoreCase);
+        }
     }
 }
